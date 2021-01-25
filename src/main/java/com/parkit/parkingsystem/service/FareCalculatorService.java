@@ -31,8 +31,6 @@ public class FareCalculatorService {
         System.out.println("initial price: "+duration * Fare.CAR_RATE_PER_HOUR );
         System.out.println("************");
 
-        ////////////////////////////////////////////////test
-
         boolean client = isClient(ticket.getVehicleRegNumber());
         System.out.println(client);
 
