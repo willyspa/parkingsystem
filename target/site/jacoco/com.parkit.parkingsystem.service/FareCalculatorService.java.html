@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FareCalculatorService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parking-system</a> &gt; <a href="index.source.html" class="el_package">com.parkit.parkingsystem.service</a> &gt; <span class="el_source">FareCalculatorService.java</span></div><h1>FareCalculatorService.java</h1><pre class="source lang-java linenums">package com.parkit.parkingsystem.service;
+
+import com.parkit.parkingsystem.config.DataBaseConfig;
+import com.parkit.parkingsystem.constants.DBConstants;
+import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.model.Ticket;
+
+import java.sql.*;
+import java.util.Date;
+
+<span class="fc" id="L11">public class FareCalculatorService {</span>
+
+    public void calculateFare(Ticket ticket){
+<span class="pc bpc" id="L14" title="1 of 4 branches missed.">        if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ){</span>
+<span class="fc" id="L15">            throw new IllegalArgumentException(&quot;Out time provided is incorrect:&quot;+ticket.getOutTime().toString());</span>
+        }
+
+        //int inHour = ticket.getInTime().getHours();
+        //int outHour = ticket.getOutTime().getHours();
+<span class="fc" id="L20">        Date inHour = ticket.getInTime();</span>
+<span class="fc" id="L21">        Date outHour = ticket.getOutTime();</span>
+<span class="fc" id="L22">        float duration = (float)(outHour.getTime() - inHour.getTime())/(1000*60*60);</span>
+        //TODO: Some tests are failing here. Need to check if this logic is correct
+        //Date duration = outHour - inHour;
+
+<span class="fc" id="L26">        System.out.println(&quot;************&quot;);</span>
+<span class="fc" id="L27">        System.out.println(&quot;inHour&quot;+inHour);</span>
+<span class="fc" id="L28">        System.out.println(&quot;outHour&quot;+outHour);</span>
+<span class="fc" id="L29">        System.out.println(duration);</span>
+<span class="fc" id="L30">        System.out.println(&quot;ticket reg number: &quot;+ticket.getVehicleRegNumber());</span>
+<span class="fc" id="L31">        System.out.println(&quot;initial price: &quot;+duration * Fare.CAR_RATE_PER_HOUR );</span>
+<span class="fc" id="L32">        System.out.println(&quot;************&quot;);</span>
+
+        ////////////////////////////////////////////////test
+
+<span class="fc" id="L36">        boolean client = isClient(ticket.getVehicleRegNumber());</span>
+<span class="fc" id="L37">        System.out.println(client);</span>
+
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if(duration&lt;0.5){</span>
+<span class="fc" id="L40">            ticket.setPrice(Fare.RATE_BELOW_HALF_AN_HOUR);</span>
+        }
+        else{
+            double reduction;
+
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">            if(client)</span>
+<span class="nc" id="L46">                reduction = 0.95;</span>
+            else
+<span class="fc" id="L48">                reduction = 1;</span>
+
+<span class="pc bpc" id="L50" title="1 of 3 branches missed.">            switch (ticket.getParkingSpot().getParkingType()){</span>
+
+                case CAR: {
+<span class="fc" id="L53">                    ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * reduction);</span>
+<span class="fc" id="L54">                    break;</span>
+                }
+                case BIKE: {
+<span class="fc" id="L57">                    ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR * reduction);</span>
+<span class="fc" id="L58">                    break;</span>
+                }
+<span class="nc" id="L60">                default: throw new IllegalArgumentException(&quot;Unknown Parking Type&quot;);</span>
+            }
+        }
+
+<span class="fc" id="L64">    }</span>
+    public boolean isClient(String vehicleReg){
+<span class="fc" id="L66">        DataBaseConfig dataBaseConfig = new DataBaseConfig();</span>
+<span class="fc" id="L67">        Connection con = null;</span>
+<span class="fc" id="L68">        int result = 0;</span>
+        try {
+<span class="fc" id="L70">            con = dataBaseConfig.getConnection();</span>
+<span class="fc" id="L71">            PreparedStatement ps = con.prepareStatement(DBConstants.COUNT_REG_VEHICLE);</span>
+<span class="fc" id="L72">            ps.setString(1,vehicleReg);</span>
+<span class="fc" id="L73">            ResultSet rs = ps.executeQuery();</span>
+<span class="fc" id="L74">            rs.next();</span>
+<span class="fc" id="L75">            result = rs.getInt(&quot;total&quot;);</span>
+
+<span class="nc" id="L77">        }catch (Exception e){</span>
+<span class="nc" id="L78">            System.err.println(&quot;Got an exception! &quot;+e);</span>
+<span class="fc" id="L79">        }</span>
+
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        if(result&gt;1){</span>
+<span class="nc" id="L82">            return true;</span>
+        }
+        else{
+<span class="fc" id="L85">            return false;</span>
+        }
+
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
