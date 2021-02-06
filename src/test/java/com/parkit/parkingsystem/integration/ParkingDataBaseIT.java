@@ -1,11 +1,14 @@
 package com.parkit.parkingsystem.integration;
 
+import com.parkit.parkingsystem.config.DataBaseConfig;
+import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
+import org.apache.logging.log4j.LogManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +16,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.sql.Connection;
+import org.apache.logging.log4j.Logger;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
+import static org.junit.jupiter.api.Assertions.*;
+
+
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +44,9 @@ public class ParkingDataBaseIT {
         parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
         ticketDAO = new TicketDAO();
         ticketDAO.dataBaseConfig = dataBaseTestConfig;
+        ///test
         dataBasePrepareService = new DataBasePrepareService();
+
     }
 
     @BeforeEach
@@ -40,6 +54,7 @@ public class ParkingDataBaseIT {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         dataBasePrepareService.clearDataBaseEntries();
+
     }
 
     @AfterAll
@@ -51,7 +66,26 @@ public class ParkingDataBaseIT {
     public void testParkingACar(){
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
-        //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
+        //TODO: check that a ticket is actually saved in DB and Parking table is updated with availability
+
+        DataBaseConfig dataBaseConfig = new DataBaseConfig();
+        Connection con = null;
+        int result = 0;
+        try {
+            con = dataBaseTestConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstantsTest.COUNT_REG_VEHICLE_TEST);
+            ps.setString(1,"ABCDEF");
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            result = rs.getInt("total");
+            assertTrue(result>0);
+
+        }catch (Exception e){
+            System.err.println("Got an exception! "+e);
+        }
+
+
+
     }
 
     @Test
