@@ -86,6 +86,30 @@ public class TicketDAO {
         }
         return false;
     }
+    public static boolean isClient(String vehicleReg){
+        DataBaseConfig dataBaseConfig = new DataBaseConfig();
+        Connection con = null;
+        int result = 0;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.COUNT_REG_VEHICLE);
+            ps.setString(1,vehicleReg);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            result = rs.getInt("total");
+
+        }catch (Exception e){
+            System.err.println("Got an exception! "+e);
+        }
+
+        if(result>1){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
 
 
 }

@@ -3,6 +3,7 @@ package com.parkit.parkingsystem.service;
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.Ticket;
 
 import java.sql.*;
@@ -31,7 +32,7 @@ public class FareCalculatorService {
         System.out.println("initial price: "+duration * Fare.CAR_RATE_PER_HOUR );
         System.out.println("************");
 
-        boolean client = isClient(ticket.getVehicleRegNumber());
+        boolean client = TicketDAO.isClient(ticket.getVehicleRegNumber());
         System.out.println(client);
 
         if(duration<0.5){
@@ -60,30 +61,7 @@ public class FareCalculatorService {
         }
 
     }
-    public boolean isClient(String vehicleReg){
-        DataBaseConfig dataBaseConfig = new DataBaseConfig();
-        Connection con = null;
-        int result = 0;
-        try {
-            con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.COUNT_REG_VEHICLE);
-            ps.setString(1,vehicleReg);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            result = rs.getInt("total");
 
-        }catch (Exception e){
-            System.err.println("Got an exception! "+e);
-        }
-
-        if(result>1){
-            return true;
-        }
-        else{
-            return false;
-        }
-
-    }
 
 
 }
