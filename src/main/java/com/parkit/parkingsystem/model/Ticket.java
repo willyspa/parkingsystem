@@ -44,18 +44,19 @@ public class Ticket {
     }
 
     public Date getInTime() {
-        return inTime;
+        return inTime = inTime == null ? null : (Date) inTime.clone();
     }
-
+    // deep copy of outTime to avoid any accidental access to the value - for exemple the object used to set the time can be modified unintentionally (reference issues)
     public void setInTime(Date inTime) {
-        this.inTime = inTime;
+        this.inTime = inTime == null ? null : (Date) inTime.clone();
     }
 
     public Date getOutTime() {
-        return outTime;
+        return outTime = outTime == null ? null : (Date) outTime.clone();
+    }
+    // deep copy of outTime to avoid any accidental access to the value - for exemple the object used to set the time can be modified unintentionally (reference issues)
+    public void setOutTime(Date outTime) {
+        this.outTime = outTime == null ? null : (Date) outTime.clone();
     }
 
-    public void setOutTime(Date outTime) {
-        this.outTime = outTime;
-    }
 }

@@ -13,20 +13,33 @@ public class DataBaseConfig {
     private static final Logger logger = LogManager.getLogger("DataBaseConfig");
 
     public Connection getConnection() throws ClassNotFoundException, SQLException, IOException {
-        logger.info("Create DB connection");
-        Properties properties = new Properties();
-        FileInputStream in = new FileInputStream(("src/main/resources/db.properties"));
-        properties.load(in);
-        in.close();
 
+        Properties properties = new Properties();
+        FileInputStream in = null;
+        try{
+            in = new FileInputStream(("src/main/resources/db.properties"));
+            properties.load(in);
+        }catch(IOException e){
+            System.out.println("error on FileInputStream: "+e);
+        }finally {
+            if ( in != null ){
+                try {
+                    in.close();
+                }catch( Exception e ){
+                    System.out.println("the stream failed to close :"+e);
+                }
+            }
+
+        }
         String driver = properties.getProperty("ConnectionDB.driver");
         String url = properties.getProperty("ConnectionDB.url");
         String username = properties.getProperty("ConnectionDB.username");
         String password = properties.getProperty("ConnectionDB.password");
 
         Class.forName(driver);
-        return DriverManager.getConnection(url,username,password);
+        logger.info("Create DB connection");
 
+        return DriverManager.getConnection(url,username,password);
     }
 
     public void closeConnection(Connection con){

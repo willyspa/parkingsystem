@@ -29,9 +29,11 @@ public class ParkingService {
 
     public void processIncomingVehicle() {
         try{
+            System.out.println("000000000000000PROCESSS INCOMING VEHICLE");
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0){
                 String vehicleRegNumber = getVehichleRegNumber();
+                System.out.println("00000000000000000000000 after getvehicleRegNumber:"+vehicleRegNumber);
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
 
@@ -102,6 +104,7 @@ public class ParkingService {
             String vehicleRegNumber = getVehichleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             Date outTime = new Date();
+            System.out.println("OUTIME:"+outTime);
             ticket.setOutTime(outTime);
             fareCalculatorService.calculateFare(ticket);
             if(ticketDAO.updateTicket(ticket)) {

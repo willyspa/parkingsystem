@@ -49,6 +49,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>0.8.5</version>
@@ -166,11 +172,8 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>3.0.5</version>
-                <configuration>
-                    <xmlOutput>true</xmlOutput>
-                    <!--       <excludeFilterFile>${project.build.outputDirectory}/exclude.xml</excludeFilterFile> -->
-                      </configuration>
-                  </plugin>
-              </plugins>
-          </reporting>
-      </project>
+
+            </plugin>
+        </plugins>
+    </reporting>
+</project>
