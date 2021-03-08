@@ -1,6 +1,5 @@
 package com.parkit.parkingsystem.model;
 
-import java.util.Calendar;
 import java.util.Date;
 
 public class Ticket {
@@ -46,7 +45,7 @@ public class Ticket {
     public Date getInTime() {
         return inTime = inTime == null ? null : (Date) inTime.clone();
     }
-    // deep copy of outTime to avoid any accidental access to the value - for exemple the object used to set the time can be modified unintentionally (reference issues)
+    // deep copy of outTime to avoid any accidental access to the value - for example the object used to set the time can be modified unintentionally (reference issues)
     public void setInTime(Date inTime) {
         this.inTime = inTime == null ? null : (Date) inTime.clone();
     }
@@ -54,7 +53,7 @@ public class Ticket {
     public Date getOutTime() {
         return outTime = outTime == null ? null : (Date) outTime.clone();
     }
-    // deep copy of outTime to avoid any accidental access to the value - for exemple the object used to set the time can be modified unintentionally (reference issues)
+    // deep copy of outTime to avoid any accidental access to the value - for example the object used to set the time can be modified unintentionally (reference issues)
     public void setOutTime(Date outTime) {
         this.outTime = outTime == null ? null : (Date) outTime.clone();
     }

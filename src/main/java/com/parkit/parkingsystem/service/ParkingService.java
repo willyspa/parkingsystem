@@ -29,11 +29,9 @@ public class ParkingService {
 
     public void processIncomingVehicle() {
         try{
-            System.out.println("000000000000000PROCESSS INCOMING VEHICLE");
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0){
                 String vehicleRegNumber = getVehichleRegNumber();
-                System.out.println("00000000000000000000000 after getvehicleRegNumber:"+vehicleRegNumber);
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
 
